@@ -1,0 +1,89 @@
+---
+title: "Progress_Report_Airbnb"
+date: "10/26/2020"
+output:
+  rmarkdown::html_vignette: default
+  pdf_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+# Aribnb_New_York_city    
+## Group member:Yan Zhang, Yuncheng Shi,Yiyao Wang
+
+# Description
+
+Aribnb New York is a data set about the information of home stay in New York. It include name of house, type of house, owner's name, location and number of reviews. According to our shiny app, we want to help the user screen the houses that meet the criteria, study the relationship between variables and conduct statistical analysis.
+
+# Data source
+
+[Aribnb_New_York_city](http://insideairbnb.com/get-the-data.html) 
+
+# Overall Layout
+
+We plan to create three main tabs.
+
+## map page
+
+The first tab is map. It include the title, the filter on the left, the map with eligible houses on the right. The filter can be name, host name,neighbourhood,price, room type and so on. Users can use the filter to choose the house the want to live.
+
+## plot and test page
+
+As we have shown the users which rooms are satisfied to them on the map based on their preference, we are going to do some statistics in the second page. In the data set of Airbnb we choose, it has 16 variables. Some of the variables are characteristic and some of them are double. We are going to provide three labels for the users to do plot. Firstly, the uses can choose how many variables they will use, we provide the users 3 choices. After they click the box for “one variable”, “two variables”, or “three variables”, the app will jump to the next step. 
+
+### One variable   
+
+For statistics for one variable, the users can choose to make a histogram or frequency polygon. if the variable is double style. If the variable is not double, the users can choose to make a pie chart.  
+
+### Two variables  
+
+For the “two variables” situation, the users can try to observe the relationship between the two variables from the plot they make. The users are able to decide which is for x axis and y axis. They can choose to make a boxplot or scatter plot or a jitter plot. 
+
+### Three variables 
+
+For the “three variables” situation, the users can try to observe the relationship between the two variables from the plot they make. The users are able to decide which is for x axis and y axis.  And they can choose another variable as the facet wrap of the first two variables.   
+
+## Spreadsheet page  
+
+Page 3 contains data tables of the what data we use. It is convenient for the users to have a overall look of the data. 
+
+# Data Analysis and Visuliaziton/ Statistical Modeling
+
+``` {r, echo = FALSE}
+knitr::kable(tibble::tribble(
+  ~"variable Type", ~"Plot Tpye", ~"Test type",
+  "numeric", "histogram, Density, Frequency Polygon ", "T-test",
+  "factor", "pie chart", "NULL",
+  "numeric and numeric", "scatter", "Summary",
+  "numeric and factor", "boxplot", "ANOVA",
+  "factor and factor", "jitter", "Chisq-test",
+  "numeric and two factors", "boxplot/facet", "NULL",
+  "three factors", "jitter/facet", "NULL",
+),
+"simple")
+```
+
+# Allocation of Responsibilities for the team  
+
+We plan to have a virtual meeting every week, so and we can share our opinions of the project and change some in detail. Yao is responsible for Page 1. She needs to produce the map after the users filter the data. Shi and Yan are responsible for Page 2 and Page 3. Yan and Shi will produce code for statistical analysis and plot for the uses. For the demonstration and vignette, we will finish it together in a zoom meeting.   
+
+# Project Steps/Schedule  
+ 
+``` {r, echo = FALSE}
+knitr::kable(tibble::tribble(
+  ~"Project Steps", ~"Complete By Date", ~"   Responsible Individuals",
+  "download and tidy the data", "10/30/2020", "Yan",
+  "design the UI and what variable to use", "11/3/2020", "Yao, Shi",
+  "Creating Shared Repo", "11/22/2020", "Shi",
+  "produce the basic panel for shiny app", "11/7/2020", "Yan, Shi",
+  "make the plots for shiny app", "11/14/2020", "Yao, Shi",
+  "creat the test models for shiny app", "11/22/2020", "Yan, Yao",
+  "finish the vignette", "11/28/2020", "Shi",
+  "Talk about the Demonstration and practices ", "12/5/2020", "Shi, Yan, Yao"
+),
+"simple")
+```
+   

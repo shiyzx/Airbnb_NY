@@ -1,0 +1,100 @@
+---
+title: "aribnb"
+author: "yiyao wang"
+date: "12/5/2020"
+output:
+  html_document: default
+  pdf_document: default
+  word_document: default
+---
+
+# Aribnb New Yourk  
+
+## Author: Yuncheng Shi, Yan Zhang, Yiyao Wang  
+
+## Date: 12/5/2020
+
+# Use case  
+
+In recent years, with the development of sharing economy, Bed and Breakfast (B&B) has won the favor of the majority of travelers for its low price, changeable room type, complete facilities and more close to life. As most B&Bs are based on families, this makes their geographical location more random. The selection of a suitable home stay facility should be based on geographical location, price, customer evaluation, room type and other aspects. Gathering information from the Internet and choosing the right house is a daunting task.The App is designed to help customers select the B&B they prefer quickly and convenience, and we can study the relationship between price, rome type, block and other factors.  
+First part is map and sentiment analysis. This part designed by Yuncheng Shi and Yiyao Wang, it can help traveler filter the house they want to live and the words in reviews could help them know more about the house. Second part is variable tests designed by Yan Zhang. This part analyzes the univariate, bivariate and triradiate selected by the user and outputs the plot and statistical analysis results.  
+
+# Required Packages  
+In our app, we are going to use the following packages. Firstly, we use shiny and shinyapp packages to build the structure of website. When users use the app, the website will change output based on the inputs chosen by users. Secondly, we use “DT” and “data.table” packages. These two packages help us to show the data set or data table in the app. To make graph, we use “plotly” and “googleVis” packages. Then we use “leaflet” package to add map in app. In addition, we use some common package, such as “readr”, “tidyverse”, “tidytext”, “broom” and “purr” packages.\
+Here is the example for packages.\
+```{r include=FALSE}
+library(shiny)
+library(shinydashboard)
+library(DT)
+library(data.table)
+library(plotly)
+library(leaflet)
+library(readr)
+library(googleVis)
+library(tidyverse)
+library(broom)
+library(purrr)
+library(tidytext)
+```
+
+
+# Data Source and Structure
+
+The data in our APP is sourced from publicly available information from the Airbnb site. The data set include the name, location, type, price, avaliable days of the room, name of the host and a lot of information about reviews.
+
+# EDA Inputs, Controls, and Outputs  
+In our app, we plan to make an virtual analysis for single column, pairs of columns and three columns.  
+
+## Question 
+What is the most common price of New York in Airbnb?
+In this part, the users needs to choose the inputs in the app. He or she can select the Univariable and choose numeric variable type since the price of hotel is numeric in the data frame. Then the user can select price as the chosen variable. Since the user wants to see the frequency of the price, the user can click Frequency Polyon. Then app will show the frequency plot.
+
+## Outputs  
+```{r echo=FALSE}
+airbnb<-read_csv("../data-raw/listings.csv", col_types = cols(host_id = col_skip(), 
+                                  calculated_host_listings_count=col_skip(),
+                                  last_review=col_skip()))
+airbnb %>% 
+  mutate(neighbourhood_group=parse_factor(neighbourhood_group),
+         room_type=parse_factor(room_type),
+         neighbourhood=parse_factor(neighbourhood)) ->airbnb_p2s
+airbnb_p2s %>% 
+  filter(availability_365!=0) %>%
+  mutate(minimum_nights=str_replace(minimum_nights,"\\d\\d+","10+"),
+         minimum_nights=parse_factor(minimum_nights))%>% 
+  filter(price>quantile(airbnb_p2s$price,.05)&price<quantile(airbnb_p2s$price,.95))->airbnb
+ggplot(airbnb,aes(x=price))+
+  geom_freqpoly()
+```
+
+And most price in New Tork in Airbnb is among 100$. When the price is higher than 100 dollar per night, the amount of available choices for the uses decreases. When the price per night is over 300 dollar, airbnb does not provide many choices for the users.
+ 
+
+# Statistical Analysis Inputs, Controls, and Outputs  
+
+## Question 
+
+Null hypothesis: The mean price in New York is 100.
+Alternative hypothesis: The mean price in New York is not 100 dollar per night.
+```{r echo=FALSE}
+t.test(airbnb$price,mu=100,alternative = "two.sided")
+```
+From the output of t-test, the p-value is very small. We can reject the null hypothesis. The output shows that the mean price in New York is not 100 dollar per night. 
+
+# References  
+
+[1]Dillon DuBois (2019).Airnb Analytics: Using Data to Boost Vacation Rental Revenue. Retrieved from:[https://www.airdna.co/blog/airbnb-analytics-drive-rental-revenue](https://www.airdna.co/blog/airbnb-analytics-drive-rental-revenue)  
+
+DuBois told us that the traditional approach to Airbnb analytics are occupancy rates and average daily rates. However, the Revenue per Available Rental and Booking Lead Time can also be the tool to analysis and increase the rental.
+
+[2]Shirley Chen (2019). How to Analyze Airbnb Performance Data in the Right Way.Retrieved from:[https://medium.com/analytics-vidhya/how-to-analyze-airbnb-performance-data-in-the-right-way-b83f3dad1458](https://medium.com/analytics-vidhya/how-to-analyze-airbnb-performance-data-in-the-right-way-b83f3dad1458)  
+
+Chen did a similary job with us. She gives us some suggestions between location and price.Meanwhile, Chen pointed out that from 2011 to 18 years, airbnb was in increasing demand among tourists in New York. And the number of reviews per year has been constantly increasing, which means Airbnb's New York market will expand further in the future.
+
+[3]Sarang Gupta (2019). Airbnb Rental Listings Dataset Mining. Retrieved from:[https://towardsdatascience.com/airbnb-rental-listings-dataset-mining-f972ed08ddec](https://towardsdatascience.com/airbnb-rental-listings-dataset-mining-f972ed08ddec)  
+
+Gupta's article analyzed the relationship between demand and price. The seasonality and periodicity of demand have obvious influence on the price. At the same time, his analysis of customer reviews also provides a new perspective and perspective for our report.
+
+[4]Part Time Analyst (2019). Finding Undervalued Air Bnb’s. Retrieved from:[https://www.r-bloggers.com/2019/09/finding-undervalued-air-bnbs/](https://www.r-bloggers.com/2019/09/finding-undervalued-air-bnbs/)  
+
+This article is unique in analyzing the effect of words in the name of a house on the price. For example, we can choose luxury, Cozy, spacious, beautiful and large as properties of these room. This provides a new way of word analysis for our app.
